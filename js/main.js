@@ -53,7 +53,23 @@ const closeModal = event => {
 			// При закрытии модального окна(чтоб при новом открытии окна эти елименты были с изначальным значением) удаляем название выбранного фото
 			modalFileBtn.textContent = textFileBtn;
 			checkForm();
-		};
+	};
+};
+
+const renderCard = () => {
+	catalog.textContent = '';
+
+	dataBase.forEach((item, i) => {
+		catalog.insertAdjacentHTML('beforeend', `
+			<li class="card" data-id="${i}">
+				<img class="card__image" src="data:image/jpeg;base64,${item.image}" alt="test">
+				<div class="card__description">
+					<h3 class="card__header">${item.nameItem}</h3>
+					<div class="card__price">${item.costItem} ₽</div>
+				</div>
+			</li>
+		`);
+	});
 };
 
 modalFileInput.addEventListener('change', event => {
@@ -81,12 +97,10 @@ modalFileInput.addEventListener('change', event => {
 			modalImageAdd.src = `data:image/jpeg;base64,${infoPhoto.base64}`;
 		} else {
 			modalFileBtn.textContent = 'Файл не должен привышать 200кб';
-		}
-
-		
+			modalFileInput.value = '';
+			checkForm();
+		};
 	});
-
-	
 });
 
 // Навешиваем на форму Submit события
@@ -111,6 +125,7 @@ modalSubmit.addEventListener('submit', event => {
 	// Закрываем модальное окно. И чтобы обмануть нашу функцию, мы создаём здесь объект
 	closeModal({target: modalAdd});
 	saveDataBase();
+	renderCard();
 });
 
 // При нажатии на кнопку 'Подать объявление' удаляется класс hide и появляется всплывающее окно
@@ -137,3 +152,5 @@ catalog.addEventListener('click', event => {
 // Закрытие модпльного окна при нажатии на крестик или мимо окна
 modalAdd.addEventListener('click', closeModal);
 modalItem.addEventListener('click', closeModal);
+
+renderCard();
